@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Kiểm kê đồng thời 2 sản phẩm";
+}
+@model Warehouse_25DH110549.Models.Product
+
+<h2>Kiểm kê đồng thời hai sản phẩm</h2>
+<hr />
+
+@if (ViewBag.ThongBao != null)
+{
+    <div class="alert @(ViewBag.ThongBao.Contains("Lỗi") ? "alert-danger" : "alert-success")">
+        @ViewBag.ThongBao
+    </div>
+}
+
+@using (Html.BeginForm("KiemKeHai", "Products", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <!-- Sản phẩm 1 -->
+        <div class="col-md-5">
+            <h4>Sản phẩm thứ nhất</h4>
+            <div class="form-group">
+                <label>Chọn mã sản phẩm (ProductID):</label>
+                @Html.DropDownList("id1", (SelectList)ViewBag.DanhSachSP, "-- Chọn sản phẩm --", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Số lượng thực tế mới:</label>
+                <input type="number" name="qty1" class="form-control" required min="0" placeholder="Nhập số nguyên không âm..." />
+            </div>
+        </div>
+
+        <!-- Sản phẩm 2 -->
+        <div class="col-md-5">
+            <h4>Sản phẩm thứ hai</h4>
+            <div class="form-group">
+                <label>Chọn mã sản phẩm (ProductID):</label>
+                @Html.DropDownList("id2", (SelectList)ViewBag.DanhSachSP, "-- Chọn sản phẩm --", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Số lượng thực tế mới:</label>
+                <input type="number" name="qty2" class="form-control" required min="0" placeholder="Nhập số nguyên không âm..." />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <button type="submit" class="btn btn-primary">Cập nhật cả hai</button>
+        @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-default" })
+    </div>
+}

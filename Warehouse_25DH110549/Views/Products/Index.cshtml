@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Warehouse_25DH110549.Models.Product>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+}
+
+<h2>Danh sách sản phẩm</h2>
+
+<!-- HIỂN THỊ THÔNG BÁO KIỂM KÊ -->
+@if (TempData["ThongBaoKiemKe"] != null)
+{
+    <div class="alert alert-success" style="font-size: 16px; font-weight: bold;">
+        @TempData["ThongBaoKiemKe"]
+    </div>
+}
+<!-- KẾT THÚC THÔNG BÁO -->
+<p>
+    @Html.ActionLink("Thêm mới sản phẩm", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<!-- CHÈN FORM TÌM KIẾM VÀO ĐÂY -->
+@using (Html.BeginForm("Index", "Products", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom: 20px;" }))
+{
+    <div class="form-group">
+        <input type="text" name="searchString" class="form-control" placeholder="Nhập tên sản phẩm..." value="@Request.QueryString["searchString"]" />
+    </div>
+
+    <div class="form-group">
+        <select name="statusFilter" class="form-control">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="OutOfStock" @(Request.QueryString["statusFilter"] == "OutOfStock" ? "selected" : "")>Hết hàng</option>
+            <option value="LowStock" @(Request.QueryString["statusFilter"] == "LowStock" ? "selected" : "")>Sắp hết</option>
+            <option value="InStock" @(Request.QueryString["statusFilter"] == "InStock" ? "selected" : "")>Đủ hàng</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Tìm kiếm / Lọc</button>
+}
+<!-- KẾT THÚC FORM TÌM KIẾM -->
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>
+                @Html.ActionLink("Đơn giá", "Index", new { sortOrder = ViewBag.PriceSortParm, searchString = Request.QueryString["searchString"], statusFilter = Request.QueryString["statusFilter"] })
+            </th>
+            <th>Số lượng</th>
+            <th>Tình trạng</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>
+
+                    @if (item.Quantity == 0)
+                    {
+                        <span style="color:red; font-weight:bold;">Hết hàng</span>
+                    }
+                    else if (item.Quantity >= 1 && item.Quantity <= 4)
+                    {
+                        <span style="color:orange; font-weight:bold;">Sắp hết</span>
+                    }
+                    else
+                    {
+                        <span style="color:green;">Đủ hàng</span>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.ProductID }) |
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.ProductID }) |
+                    @Html.ActionLink("Xóa", "Delete", new { id = item.ProductID })
+                    @Html.ActionLink("Kiểm kê", "KiemKe", new { id = item.ProductID }, new { @class = "text-danger font-weight-bold" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

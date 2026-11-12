@@ -1,0 +1,38 @@
+﻿@model Warehouse_25DH110549.Models.Product
+
+@{
+    ViewBag.Title = "Cập nhật kiểm kê";
+}
+
+<h2>Kiểm kê sản phẩm: @Model.ProductName</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <strong>Số lượng hiện tại trong hệ thống:</strong> @Model.Quantity <br />
+            <strong>Tình trạng hiện tại:</strong>
+            @if (Model.Quantity == 0)
+            {<span class="text-danger">Hết hàng</span> }
+            else if (Model.Quantity <= 4)
+            { <span class="text-warning">Sắp hết</span> }
+            else
+            { <span class="text-success">Đủ hàng</span>}
+        </div>
+
+        @using (Html.BeginForm("KiemKe", "Products", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.ProductID)
+
+            <div class="form-group">
+                <label>Nhập số lượng thực tế kiểm đếm được:</label>
+                <input type="number" name="quantityThucTe" class="form-control" required min="0" placeholder="Nhập số nguyên không âm..." />
+                <span class="text-danger">@ViewBag.Error</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-default" })
+        }
+    </div>
+</div>
